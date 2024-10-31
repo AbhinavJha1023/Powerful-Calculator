@@ -1,214 +1,89 @@
-# Imports the necessary modules
 import math
 import random
 
-
 def calculator():
-
-    # Contains the current version of the calculator
-    calculator_version = "1.1"
-
-    # Introduction to calculator
+    calculator_version = "2.0"
     print("Welcome to Zeeshan's Calculator!")
     print("This is currently a work in progress.")
-    Name = input("Enter your name please:")
-    print("Hello " + Name + "!")
-    print("I hope you enjoy using this calculator :)")
-    
-    # Displays options for the user
-    def options():
-        print("\nOptions")
-        print("Enter 'add' to add two numbers")
-        print("Enter 'subtract' to subtract two numbers")
-        print("Enter 'multiply' to multiply two numbers")
-        print("Enter 'divide to divide two numbers")
-        print("Enter 'more' to see  a list of more operations available")
-        print("Enter 'info' for more information and help")
-        print("Enter 'quit' to end the program")
-        
-    options()
-    
-    # Allows calculator to be used
-    while True:
-        user_input = input("\nPlease input your command:")
+    name = input("Enter your name, please: ")
+    print(f"Hello {name}!\nI hope you enjoy using this calculator :)")
 
-        # Displays options again for the user
-        if user_input == "options":
-            pass
+    # Available operations in the calculator
+    operations = {
+        "add": lambda x, y: x + y,
+        "subtract": lambda x, y: x - y,
+        "multiply": lambda x, y: x * y,
+        "divide": lambda x, y: x / y if y != 0 else "Error: Division by zero",
+        "powers": lambda x, y: x ** y,
+        "sqrt": lambda x: math.sqrt(x) if x >= 0 else "Error: Negative input for square root",
+        "percent": lambda x: x / 100,
+        "pi": lambda: math.pi,
+        "e": lambda: math.e,
+        "sin": lambda x: math.sin(math.radians(x)),
+        "cos": lambda x: math.cos(math.radians(x)),
+        "tan": lambda x: math.tan(math.radians(x)),
+        "log": lambda x, base=10: math.log(x, base) if x > 0 else "Error: Non-positive input for logarithm",
+        "rand": lambda: random.random(),
+        "randint": lambda x, y: random.randint(int(x), int(y)) if x <= y else "Error: Invalid range for randint"
+    }
 
-        # Displays a list of more operations
-        elif user_input == "more":
-            print("\nList of more operations")
-            print("Enter 'powers' to raise a number to the power of another")
-            print("Enter 'sqrt' to find the square root of a number")
-            print("Enter 'percent' to calculate percentage of a number")
-            print("Enter 'pi' to return value for pi")
-            print("Enter 'e' to return value for e")
-            print("Enter 'sin' to find sine of a number")
-            print("Enter 'cos' to find cosine of a number")
-            print("Enter 'tan' to find tangent of a number")
-            print("Enter 'rand' to return a random numbeer between 0 and 1")
-            print("Enter 'randint' to return a random number between two numbers")
-            continue
-            
-        # Displays more information for the user
-        elif user_input == "info":
-            print("\nInformation")
-            print("Your name is currently saved as '" + Name + "'")
-            print("Enter 'name' to change your saved name")
-            print("Enter 'options' to view options again")
-            print("If an error has occurred it means you have not input the correct data type")
-            print("You are able to use negative and decimal numbers in this calculator")
-            print("More information and help coming soon")
-            print("Current version: " + calculator_version)
-            continue
-            
-        # Exits the user from the calculator
-        elif user_input == "quit":
-            print("\nThank you for using this calculator " + Name + "!")
-            break
-            
-        # Allows user to change their saved name
-        elif user_input == "name":
-            change = input("\nWould you like to change your name? Yes or No:")
-            if change == "Yes":
-                Name = input("Enter your name please:")
-                print("Thank you " + Name + "!")
-            elif change == "No":
-                print("Okay " + Name + "!")
-            else:
-                print("Unknown input")    
-        
-        # Adds two numbers
-        elif user_input == "add":
+    # Display available commands
+    def show_options():
+        print("\nOptions:")
+        for operation in operations:
+            print(f"Enter '{operation}' for {operation} operation")
+        print("Enter 'info' for more information")
+        print("Enter 'name' to change your saved name")
+        print("Enter 'quit' to exit")
+
+    # Handles user commands
+    def execute_command(command):
+        if command == "quit":
+            print(f"\nThank you for using this calculator, {name}!")
+            return False
+
+        elif command == "info":
+            print(f"\nInformation:\nYour name is '{name}'\nCurrent version: {calculator_version}")
+            return True
+
+        elif command == "name":
+            nonlocal name
+            name = input("Enter your new name, please: ")
+            print(f"Name updated to {name}")
+            return True
+
+        # Execute the mathematical operation if available
+        elif command in operations:
             try:
-                num1 = float(input("Enter the first number:"))
-                num2 = float(input("Enter the second number:"))
-                result = str(num1 + num2)
-                print("\nThe answer is " + result)
+                if command in {"add", "subtract", "multiply", "divide", "powers", "randint"}:
+                    x = float(input("Enter the first number: "))
+                    y = float(input("Enter the second number: "))
+                    result = operations[command](x, y)
+                elif command in {"sqrt", "percent", "sin", "cos", "tan", "log"}:
+                    x = float(input("Enter the number: "))
+                    base = float(input("Enter the base (default is 10): ")) if command == "log" else None
+                    result = operations[command](x) if command != "log" else operations[command](x, base)
+                else:
+                    result = operations[command]()
+
+                print(f"\nThe answer is {result}")
             except (ValueError, TypeError):
-                print("Error occurred")
-        
-        # Subtracts two numbers
-        elif user_input == "subtract":
-            try:
-                num1 = float(input("Enter the first number:"))
-                num2 = float(input("Enter the second number:"))
-                result = str(num1 - num2)
-                print("\nThe answer is " + result)
-            except (ValueError, TypeError):
-                print("Error occurred")
-        
-        # Multiplies two numbers
-        elif user_input == "multiply":
-            try:
-                num1 = float(input("Enter the first number:"))
-                num2 = float(input("Enter the second number:"))
-                result = str(num1 * num2)
-                print("\nThe answer is " + result)
-            except (ValueError, TypeError):
-                print("Error occurred")
-        
-        # Divides two numbers
-        elif user_input == "divide":
-            try:
-                num1 = float(input("Enter the first number:"))
-                num2 = float(input("Enter the second number:"))
-                result = str(num1 / num2)
-                print("\nThe answer is " + result)
-            except ZeroDivisionError:
-                print("An error has occurred due to zero division")
-            except (ValueError, TypeError):
-                print("Error occurred")
-                
-        # Raises a number to the power of another
-        elif user_input == "powers":
-            try:
-                num1 = float(input("Enter the first number:"))
-                num2 = float(input("Enter the second number:"))
-                result = str(num1**num2)
-                print("\nThe answer is " + result)
-            except (ValueError, TypeError):
-                print("Error occurred")
-                
-        # Finds the square root of a number
-        elif user_input == "sqrt":
-            try:
-                num1 = float(input("Enter a number:"))
-                result = str(math.sqrt(num1))
-                print("\nThe answer is " + result)
-            except (ValueError, TypeError):
-                print("Error occurred")
-        
-        # Calculates percentage of a number
-        elif user_input == "percent":
-            try:
-                num1 = float(input("Enter a number:"))
-                result = str(num1 / 100)
-                print("\nThe answer is " + result)
-            except (ValueError, TypeError):
-                print("Error occurred")
-        
-        # Returns value for pi
-        elif user_input == "pi":
-                result = str(math.pi)
-                print("\nThe answer is " + result)
-        
-        # Returns value for e
-        elif user_input == "e":
-            result = str(math.e)
-            print("\nThe answer is " + result)
-        
-        # Finds the sine of a number
-        elif user_input == "sin":
-            try:
-                num1 = float(input("Enter a number:"))
-                result = str(math.sin(num1))
-                print("\nThe answer is " + result)
-            except (ValueError, TypeError):
-                print("Error occurred")
-        
-        # Finds the cosine of a number
-        elif user_input == "cos":
-            try:
-                num1 = float(input("Enter a number:"))
-                result = str(math.cos(num1))
-                print("\nThe answer is " + result)
-            except (ValueError, TypeError):
-                print("Error occurred")
-        
-        # Finds the tangent of a number
-        elif user_input == "tan":
-            try:
-                num1 = float(input("Enter a number:"))
-                result = str(math.tan(num1))
-                print("\nThe answer is " + result)
-            except (ValueError, TypeError):
-                print("Error occurred")
-        
-        # Returns a random number between 0 and 1
-        elif user_input == "rand": 
-            result = str(random.random())
-            print("\nThe answer is " + result)
-        
-        # Returns a random number between two numbers
-        elif user_input == "randint":
-            try:
-                num1 = float(input("Enter the first number:"))
-                num2 = float(input("Enter the second number:"))
-                result = str(random.randint(num1, num2))
-                print("\nThe answer is " + result)
-            except (ValueError, TypeError):
-                print("An error occurred")
-        
-        # Is displayed when an unknown input is entered
+                print("Error: Invalid input")
+            return True
+
         else:
-            print("Unknown input")
+            print("Unknown command")
+            return True
 
-        # Displays the options for the user
-        options()
+    show_options()
+
+    # Loop until the user quits
+    while True:
+        user_input = input("\nPlease input your command: ").lower()
+        if not execute_command(user_input):
+            break
+        show_options()
 
 
-# Runs the calculator
+# Run the calculator
 calculator()
-
